@@ -470,9 +470,10 @@ type DecompressResult struct {
 // ------------------------------------------------------------
 type RequestLogin struct {
 	ClientId     string `json:"client_id,omitempty"`
-	ClientSecret string `json:client_secret,omitempty`
+	ClientSecret string `json:"client_secret,omitempty"`
 	Username     string `json:"username,omitempty"`
 	Password     string `json:"password,omitempty"`
+	GrantType    string `json:"grant_type,omitempty"`
 }
 
 type ResponseLogin struct {

@@ -103,13 +103,7 @@ func NewPikPakClient(username, password string) (*PikPakClient, error) {
 			}
 			r.Request.SetAuthToken(pikpak.accessToken)
 		}
-		if err == nil {
-			return false
-		}
-		if err != nil {
-			return true
-		}
-		return false
+		return err != nil
 	})
 
 	return &pikpak, nil
@@ -121,12 +115,18 @@ func (c *PikPakClient) Login() error {
 		ClientSecret: ClientSecret,
 		Username:     c.username,
 		Password:     c.password,
+		GrantType:    "password",
 	}
 	resp := ResponseLogin{}
+	header := c.client.Header.Clone()
+	// remove user-agent
+	c.client.Header.Del("User-Agent")
 	originResp, err := c.client.R().
 		SetBody(&req).
 		SetResult(&resp).
-		Post(fmt.Sprintf("%s/v1/auth/signin", PikpakUserHost))
+		Post(fmt.Sprintf("%s/v1/auth/token", PikpakUserHost))
+	// restore header
+	c.client.Header = header
 	if err != nil {
 		return err
 	}
