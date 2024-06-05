@@ -6,8 +6,7 @@ import (
 	"testing"
 	"time"
 
-	pikpakgo "github.com/lyqingye/pikpak-go"
-
+	pikpakgo "github.com/katelynn620/pikpak-go"
 	"github.com/stretchr/testify/suite"
 )
 
