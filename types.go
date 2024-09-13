@@ -491,13 +491,15 @@ type CaptchaMeta struct {
 	PackageName   string `json:"package_name"`
 	Timestamp     string `json:"timestamp"`
 	UserID        string `json:"user_id"`
+	Username      string `json:"username"`
 }
 type RequestGetCaptcha struct {
-	Action      string      `json:"action"`
-	ClientID    string      `json:"client_id"`
-	DeviceID    string      `json:"device_id"`
-	Meta        CaptchaMeta `json:"meta"`
-	RedirectURI string      `json:"redirect_uri"`
+	Action       string      `json:"action"`
+	ClientID     string      `json:"client_id"`
+	DeviceID     string      `json:"device_id"`
+	Meta         CaptchaMeta `json:"meta"`
+	RedirectURI  string      `json:"redirect_uri"`
+	CaptchaToken string      `json:"captcha_token,omitempty"`
 }
 
 type ResponseGetCaptcha struct {

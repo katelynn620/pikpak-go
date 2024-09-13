@@ -110,12 +110,15 @@ func NewPikPakClient(username, password string) (*PikPakClient, error) {
 }
 
 func (c *PikPakClient) Login() error {
+	err := c.CaptchaToken("POST:/v1/auth/signin")
+	if err != nil {
+		return err
+	}
 	req := RequestLogin{
 		ClientId:     ClientId,
 		ClientSecret: ClientSecret,
 		Username:     c.username,
 		Password:     c.password,
-		GrantType:    "password",
 	}
 	resp := ResponseLogin{}
 	header := c.client.Header.Clone()
@@ -124,7 +127,9 @@ func (c *PikPakClient) Login() error {
 	originResp, err := c.client.R().
 		SetBody(&req).
 		SetResult(&resp).
-		Post(fmt.Sprintf("%s/v1/auth/token", PikpakUserHost))
+		SetHeader("x-captcha-token", c.captchaToken).
+		SetHeader("x-device-id", c.deviceId).
+		Post(fmt.Sprintf("%s/v1/auth/signin", PikpakUserHost))
 	// restore header
 	c.client.Header = header
 	if err != nil {
@@ -624,8 +629,12 @@ func (c *PikPakClient) CaptchaToken(action string) error {
 			PackageName:   PackageName,
 			Timestamp:     ts,
 			UserID:        c.sub,
+			Username:      c.username,
 		},
 		RedirectURI: "https://api.mypikpak.com/v1/auth/callback",
+	}
+	if c.captchaToken != "" {
+		req.CaptchaToken = c.captchaToken
 	}
 	resp := ResponseGetCaptcha{}
 	originResp, err := c.client.R().
